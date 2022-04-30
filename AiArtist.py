@@ -1,50 +1,61 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'untitled.ui'
+#############################################
+# Author: Sean Gregor
 #
-# Created by: PyQt5 UI code generator 5.9.2
+#   Project: AI Artist
 #
-# WARNING! All changes made in this file will be lost!
+#   
+#
+#############################################
 
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from PyQt5 import uic
 import sys
-from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(800, 600)
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.generateImgBTN = QtWidgets.QPushButton(self.centralwidget)
-        self.generateImgBTN.setGeometry(QtCore.QRect(290, 420, 191, 101))
-        self.generateImgBTN.setObjectName("generateImgBTN")
-        self.header = QtWidgets.QLabel(self.centralwidget)
-        self.header.setGeometry(QtCore.QRect(340, 80, 91, 21))
-        self.header.setObjectName("header")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 26))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
+#users -- using a dictionary to simplify workload, under real project restraints this would be a sql server of somekind
+users = {
+    "johnsmith": "1234abc" #bad password is bad i know, but used only for debugging and prototyping
+}
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+class UI(QMainWindow):
+    def __init__(self):
+        super(UI, self).__init__()
 
-    def retranslateUi(self, MainWindow):
-        _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.generateImgBTN.setText(_translate("MainWindow", "Generate image"))
-        self.header.setText(_translate("MainWindow", "Ai Artist"))
+        #load the ui
+        uic.loadUi("uiref/gen.ui",self)
+
+        #define window parameters
+        width = 1200
+        height = 800
+        self.setFixedSize(width,height)
+        title = "Ai Artist"
+        self.setWindowTitle(title)
+        self.setWindowIcon(QIcon("uiref/icon.jpg"))
+        
+        #define Widgets
+        self.label = self.findChild(QLabel, "label_2")
+        self.textedit = self.findChild(QTextEdit, "seed")
+        self.genBttn = self.findChild(QPushButton, "pushButton")
+        self.info = self.findChild(QPushButton, "info_bttn")
+
+        self.genBttn.clicked.connect(self.clicker)
+
+        #show the UI
+        self.show()
 
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
+    def clicker(self):
+        #self.label.setText(f'Hello there {self.textedit.toPlainText()}') 
+        seed = self.textedit.toPlainText()
+        print(seed)
+        self.textedit.setPlainText("")
 
+
+
+
+#initalize app
+app = QApplication(sys.argv)
+UIWindow  = UI()
+
+app.exec()
