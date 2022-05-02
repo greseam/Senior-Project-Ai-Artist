@@ -119,7 +119,20 @@ color: rgb(44, 48, 47);
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_8">
+    <widget class="Line" name="line_2">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>110</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_7">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -136,40 +149,7 @@ border-radius: 25px;
 </string>
      </property>
      <property name="text">
-      <string>Splice</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_9">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>320</y>
-       <width>93</width>
-       <height>81</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">color: rgb(44, 48, 47);
-background-color: rgb(83, 221, 108);
-font: 14pt &quot;MS Shell Dlg 2&quot;;
-border-radius: 25px;
-</string>
-     </property>
-     <property name="text">
-      <string>Style</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_2">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>110</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <string>???</string>
      </property>
     </widget>
    </widget>
@@ -238,26 +218,6 @@ font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
      <string>Seed:</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_7">
-    <property name="geometry">
-     <rect>
-      <x>860</x>
-      <y>620</y>
-      <width>71</width>
-      <height>71</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:rgb(255, 255, 255);
-background-color: rgb(111, 104, 109);
-font: 30pt &quot;Wingdings 3&quot;;
-border-radius: 35px;
-</string>
-    </property>
-    <property name="text">
-     <string>,</string>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="seed">
     <property name="geometry">
      <rect>
@@ -271,6 +231,22 @@ border-radius: 35px;
      <string notr="true">font: 11pt &quot;MS Shell Dlg 2&quot;;
 color:rgb(44, 48, 47);
 </string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>620</y>
+      <width>181</width>
+      <height>151</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 10pt &quot;MS Shell Dlg 2&quot;;</string>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
