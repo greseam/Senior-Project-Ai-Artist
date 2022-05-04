@@ -8,6 +8,7 @@
 #############################################
 
 from ast import If
+from asyncio.windows_events import NULL
 from distutils.log import info
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -34,6 +35,25 @@ outdir = "./images/"
 
 device = torch.device('cuda')
 
+
+class CustomDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.setWindowTitle("Ai Artist")
+
+        QBtn = QDialogButtonBox.Ok | QDialogButtonBox.Cancel
+
+        self.buttonBox = QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.rejected.connect(self.reject)
+
+        self.layout = QVBoxLayout()
+        message = QLabel("Please Select a Pkl file.")
+        self.layout.addWidget(message)
+        self.layout.addWidget(self.buttonBox)
+        self.setLayout(self.layout)
+
 class UI(QMainWindow):
     def __init__(self):
         super(UI, self).__init__()
@@ -58,16 +78,10 @@ class UI(QMainWindow):
         self.loadin = QProgressBar(self)
         self.loadin.setGeometry(840,640, 251, 41)
         self.loadin.setHidden(True)
-        self.infoText = QLabel("label", self)
-        self.infoText.setGeometry(130,620, 181,151)
-        self.infoText.setText("i: This is a tab for generating images based on a numerical seed. It generates images trained from Nvidias StyleGan2 ada-Pytorch architecure.")
-        self.infoText.setHidden(False)
-        self.infoText.setAlignment(Qt.AlignLeft)
-        self.infoText.setStyleSheet("border :2px solid black; font-size: 10pt;color: rgb(226, 228, 246);background-color: rgb(111, 104, 109);")
-        self.infoText.setWordWrap(True)
 
 
-        self.genBttn.clicked.connect(self.generateImage)
+
+        self.genBttn.clicked.connect(self.buttonClick)
         self.info.clicked.connect(self.infoButton)
 
         #show the UI
@@ -75,75 +89,95 @@ class UI(QMainWindow):
 
     #infoBttn
     def infoButton(self):
-        print(str(self.infoText.isVisible))
-        if self.infoText.isVisible == False:
-            self.infoText.setHidden(True)
-        elif self.infoText.isVisible == True:
-            self.infoText.setHidden(False)
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Info")
+        width_i = 800
+        height_i = 300
+        dlg.setFixedSize(width_i,height_i)
+        uic.loadUi("uiref/info_gen.ui",dlg)
+        
+        dlg.exec()
 
-    def generateImage(self):
-        
-        #!!loading/progress bar
-        self.loadin.setHidden(False)
-        
-        #self.label.setText(f'Hello there {self.textedit.toPlainText()}') 
+    def buttonClick(self): 
 
         seed = self.textedit.toPlainText()
-        
         #put seed usage here
         print(seed)
-        
-        self.textedit.setPlainText("")
-        self.loadin.setValue(10)
+        if seed is not None:
+            self.textedit.setPlainText("")
 
-        #put img gen code here
-        pkl = "network-snapshot-000400.pkl"
-        pkl = f"./data/{pkl}"
-        #with open(pkl, 'rb') as f:
-        #    G = pickle.load(f)['G_ema'].cuda()  # torch.nn.Module
-        #z = torch.randn([1, G.z_dim]).cuda()    # latent codes
-        self.loadin.setValue(25)
-
-        #c = None                                # class labels (not used in this example)
-        #img = G(z, c)                           # NCHW, float32, dynamic range [-1, +1]
-        self.loadin.setValue(35)
-
-        #w = G.mapping(z, c, truncation_psi=0.5, truncation_cutoff=8)
-        #img = G.synthesis(w, noise_mode='const', force_fp32=True)
-        self.loadin.setValue(45)
+            dlg = CustomDialog(self)
+            if dlg.exec():
+                print("Success!")
+                fname = QFileDialog.getOpenFileName(self, "Open Pkl file", "","Pickle File (*.pkl)")
+                if fname[0] != '':
+                    
+                    #!!loading/progress bar
+                    self.loadin.setHidden(False)
+                    self.loadin.setValue(10)
 
 
-        # Generate images.
-        print(f'Generating image for seed {seed} ...')
-        #z = torch.from_numpy(np.random.RandomState(seed).randn(1, G.z_dim)).to(device)
-        self.loadin.setValue(55)
-        #img = G(z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
-        self.loadin.setValue(70)
-        #img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
-        self.loadin.setValue(80)
-        #PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seed:04d}.png')
-        self.loadin.setValue(90)
-        for i in range(11):
-  
-            # slowing down the loop
-            time.sleep(0.05)
-  
-            # setting value to progress bar
-            self.loadin.setValue(90+i)        
+                    #load pkl file
+                    pkl = fname
+                    print(f"Loading networks from {pkl}")
+                    device = torch.device('cuda')
+                    #with dnnlib.util.open_url(network_pkl) as f:
+                    #    G = legacy.load_network_pkl(f)['G_ema'].to(device) # type: ignore
+
+                    #os.makedirs(outdir, exist_ok=True)
+                    #with open(pkl, 'rb') as f:
+                    #    G = pickle.load(f)['G_ema'].cuda()  # torch.nn.Module
+                    #z = torch.randn([1, G.z_dim]).cuda()    # latent codes
+                    self.loadin.setValue(25)
+
+                    #c = None                                # class labels (not used in this example)
+                    #img = G(z, c)                           # NCHW, float32, dynamic range [-1, +1]
+                    self.loadin.setValue(35)
+
+                    #w = G.mapping(z, c, truncation_psi=0.5, truncation_cutoff=8)
+                    #img = G.synthesis(w, noise_mode='const', force_fp32=True)
+                    self.loadin.setValue(45)
 
 
-        self.loadin.setHidden(True)
-        
+                    # Generate images.
+                    print(f'Generating image for seed {seed} ...')
+                    #z = torch.from_numpy(np.random.RandomState(seed).randn(1, G.z_dim)).to(device)
+                    self.loadin.setValue(55)
+                    #img = G(z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
+                    self.loadin.setValue(70)
+                    #img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
+                    self.loadin.setValue(80)
+                    #PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seed:04d}.png')
+                    self.loadin.setValue(90)
+                    for i in range(11):
+            
+                        # slowing down the loop
+                        time.sleep(0.05)
+            
+                        # setting value to progress bar
+                        self.loadin.setValue(90+i)        
 
-        #display to label_2 code here
-        #self.im = QPixmap(f'{outdir}/seed{seed:04d}.png')
-        self.im = QPixmap("./images/image_512.jpg")
-        self.label.setPixmap(self.im)
 
-        #!!button becomes active
+                    self.loadin.setHidden(True)
+                    
 
-    #select pickle
+                    #display to label_2 code here
+                    #self.im = QPixmap(f'{outdir}/seed{seed:04d}.png')
+                    self.im = QPixmap("./images/image_512.jpg")
+                    self.label.setPixmap(self.im)
+                    #!!button becomes active
+                else:
+                    print("Cancel3")           
+            else:
+                print("Cancel2")
+        else:
+            dlg = QMessageBox(self)
+            dlg.setWindowTitle("Oops!")
+            dlg.setText("Please enter a seed")
+            button = dlg.exec()
 
+            if button == QMessageBox.Ok:
+                print("Cancel1")
 
 
 #initalize app

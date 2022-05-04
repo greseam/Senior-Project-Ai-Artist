@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>-1</x>
+     <y>-1</y>
+     <width>801</width>
+     <height>301</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(226, 228, 246);</string>
+   </property>
+   <widget class="QPushButton" name="info_bttn">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>110</y>
+      <width>71</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QWidget#info_bttn{
+	border-radius: 35px;
+	font: 36pt &quot;Webdings&quot;;
+	background-color: rgb(83, 221, 108);
+	color: rgb(44, 48, 47);
+
+}</string>
+    </property>
+    <property name="text">
+     <string>i</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>70</y>
+      <width>571</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font: 12pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(44, 48, 47);</string>
+    </property>
+    <property name="text">
+     <string>This is a tab for generating images based on a numerical seed. It generates images trained from Nvidia's StyleGan2 ada-Pytorch architecure. </string>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>160</y>
+      <width>541</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel#label_2{
+
+	font: 12pt &quot;MS Shell Dlg 2&quot;;
+	
+	border-radius: 20px;
+	
+	background-color: rgb(111, 104, 109);
+	
+	color: rgb(87, 234, 112);
+
+}</string>
+    </property>
+    <property name="text">
+     <string>To start, enter a number for the seed and
+ click the green &quot;Generate Image&quot; Button</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+    <property name="margin">
+     <number>9</number>
+    </property>
+    <property name="indent">
+     <number>-1</number>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
