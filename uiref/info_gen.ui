@@ -51,9 +51,9 @@
     <property name="geometry">
      <rect>
       <x>140</x>
-      <y>70</y>
+      <y>50</y>
       <width>571</width>
-      <height>81</height>
+      <height>101</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -61,7 +61,7 @@
 color: rgb(44, 48, 47);</string>
     </property>
     <property name="text">
-     <string>This is a tab for generating images based on a numerical seed. It generates images trained from Nvidia's StyleGan2 ada-Pytorch architecure. </string>
+     <string>This is a tab for generating images based on a numerical seed. It generates images trained from Nvidia's StyleGan2 ada-Pytorch architecure.</string>
     </property>
     <property name="wordWrap">
      <bool>true</bool>

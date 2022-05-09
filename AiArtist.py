@@ -100,10 +100,9 @@ class UI(QMainWindow):
 
     def buttonClick(self): 
 
-        seed = self.textedit.toPlainText()
+        seeds = self.textedit.toPlainText()
         #put seed usage here
-        print(seed)
-        if seed is not None:
+        if seeds is not None:
             self.textedit.setPlainText("")
 
             dlg = CustomDialog(self)
@@ -119,36 +118,28 @@ class UI(QMainWindow):
 
                     #load pkl file
                     pkl = fname
-                    print(f"Loading networks from {pkl}")
+                    print('Loading networks from "%s"...' % pkl)
                     device = torch.device('cuda')
-                    #with dnnlib.util.open_url(network_pkl) as f:
-                    #    G = legacy.load_network_pkl(f)['G_ema'].to(device) # type: ignore
-
-                    #os.makedirs(outdir, exist_ok=True)
-                    #with open(pkl, 'rb') as f:
-                    #    G = pickle.load(f)['G_ema'].cuda()  # torch.nn.Module
-                    #z = torch.randn([1, G.z_dim]).cuda()    # latent codes
                     self.loadin.setValue(25)
+                    with dnnlib.util.open_url(pkl) as f:
+                        G = legacy.load_network_pkl(f)['G_ema'].to(device) 
+                    
 
-                    #c = None                                # class labels (not used in this example)
-                    #img = G(z, c)                           # NCHW, float32, dynamic range [-1, +1]
+                    #generate image
+                    print('Generating image for seed %d ...' % (seeds))
                     self.loadin.setValue(35)
+                    z = torch.from_numpy(np.random.RandomState(seeds).randn(1, G.z_dim)).to(device)
 
-                    #w = G.mapping(z, c, truncation_psi=0.5, truncation_cutoff=8)
-                    #img = G.synthesis(w, noise_mode='const', force_fp32=True)
                     self.loadin.setValue(45)
-
-
-                    # Generate images.
-                    print(f'Generating image for seed {seed} ...')
-                    #z = torch.from_numpy(np.random.RandomState(seed).randn(1, G.z_dim)).to(device)
+                    img = G(z, None, truncation_psi=1, noise_mode="none")
                     self.loadin.setValue(55)
-                    #img = G(z, label, truncation_psi=truncation_psi, noise_mode=noise_mode)
-                    self.loadin.setValue(70)
-                    #img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
-                    self.loadin.setValue(80)
-                    #PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seed:04d}.png')
+
+                    img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
+                    self.loadin.setValue(75)
+                    PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seeds:04d}.png')
                     self.loadin.setValue(90)
+                    
+                    #loading bar progress
                     for i in range(11):
             
                         # slowing down the loop
@@ -162,10 +153,11 @@ class UI(QMainWindow):
                     
 
                     #display to label_2 code here
-                    #self.im = QPixmap(f'{outdir}/seed{seed:04d}.png')
-                    self.im = QPixmap("./images/image_512.jpg")
+                    self.im = QPixmap(f'{outdir}/seed{seed:04d}.png')
+                    #self.im = QPixmap("./images/image_512.jpg") #test code, displays an image to label_2 *ignores generate method
+                    
                     self.label.setPixmap(self.im)
-                    #!!button becomes active
+                    
                 else:
                     print("Cancel3")           
             else:
