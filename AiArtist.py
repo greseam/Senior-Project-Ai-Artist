@@ -127,7 +127,7 @@ class UI(QMainWindow):
                     z = torch.from_numpy(np.random.RandomState(int(seeds)).randn(1, G.z_dim)).to(device)
 
                     self.loadin.setValue(45)
-                    img = G(z, None, truncation_psi=1, noise_mode="none")
+                    img = G(z, None)
                     self.loadin.setValue(55)
 
                     img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
