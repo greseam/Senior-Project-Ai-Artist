@@ -8,7 +8,6 @@
 #############################################
 
 from ast import If
-from asyncio.windows_events import NULL
 from distutils.log import info
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -22,16 +21,10 @@ import time
 
 from torch_utils import *
 from dnnlib import *
+import dnnlib as dnnlib
 
 import sys
 
-
-#users -- using a dictionary to simplify workload, under real project restraints this would be a sql server of somekind
-users = {
-    "johnsmith": "1234abc" #bad password i know, but used only for debugging and prototyping
-}
-
-outdir = "./images/"
 
 device = torch.device('cuda')
 
@@ -107,7 +100,6 @@ class UI(QMainWindow):
 
             dlg = CustomDialog(self)
             if dlg.exec():
-                print("Success!")
                 fname = QFileDialog.getOpenFileName(self, "Open Pkl file", "","Pickle File (*.pkl)")
                 if fname[0] != '':
                     
@@ -116,19 +108,22 @@ class UI(QMainWindow):
                     self.loadin.setValue(10)
 
 
+                    #define outdir
+                    outdir = "./images"
+
                     #load pkl file
-                    pkl = fname
-                    print('Loading networks from "%s"...' % pkl)
+                    pkl = fname[0]
+                    print(f"Loading networks from {pkl}...")
                     device = torch.device('cuda')
                     self.loadin.setValue(25)
-                    with dnnlib.util.open_url(pkl) as f:
-                        G = legacy.load_network_pkl(f)['G_ema'].to(device) 
+                    with open(pkl, 'rb') as f:
+                        G = pickle.load(f)['G_ema'].cuda()  # torch.nn.Module
                     
 
                     #generate image
-                    print('Generating image for seed %d ...' % (seeds))
+                    print(f'Generating image for seed {seeds} ...')
                     self.loadin.setValue(35)
-                    z = torch.from_numpy(np.random.RandomState(seeds).randn(1, G.z_dim)).to(device)
+                    z = torch.from_numpy(np.random.RandomState(int(seeds)).randn(1, G.z_dim)).to(device)
 
                     self.loadin.setValue(45)
                     img = G(z, None, truncation_psi=1, noise_mode="none")
@@ -136,7 +131,7 @@ class UI(QMainWindow):
 
                     img = (img.permute(0, 2, 3, 1) * 127.5 + 128).clamp(0, 255).to(torch.uint8)
                     self.loadin.setValue(75)
-                    PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seeds:04d}.png')
+                    PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seeds}.png')
                     self.loadin.setValue(90)
                     
                     #loading bar progress
@@ -153,11 +148,11 @@ class UI(QMainWindow):
                     
 
                     #display to label_2 code here
-                    self.im = QPixmap(f'{outdir}/seed{seed:04d}.png')
+                    self.im = QPixmap(f'{outdir}/seed{seeds}.png')
                     #self.im = QPixmap("./images/image_512.jpg") #test code, displays an image to label_2 *ignores generate method
                     
                     self.label.setPixmap(self.im)
-                    
+
                 else:
                     print("Cancel3")           
             else:
