@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import *
 from PyQt5 import uic
 import numpy as np
 import PIL.Image
+from PIL import Image
 import pickle
 import torch
 import time
@@ -134,6 +135,12 @@ class UI(QMainWindow):
                     PIL.Image.fromarray(img[0].cpu().numpy(), 'RGB').save(f'{outdir}/seed{seeds}.png')
                     self.loadin.setValue(90)
                     
+                    #resize for showing
+                    #f'{outdir}/seed{seeds}.png'
+                    image = Image.open(f'{outdir}/seed{seeds}.png')
+                    new_image = image.resize((512, 512))
+                    new_image.save(f'{outdir}/seed{seeds}.png')
+
                     #loading bar progress
                     for i in range(11):
             
